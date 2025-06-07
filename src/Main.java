@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class Main {
@@ -9,7 +10,9 @@ public class Main {
         try {
             List<String> test = Files.readAllLines(Path.of("iris.data"));
             double[][] data = new double[test.size()][];
-            int k = 3;
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Podaj ilosc klas (np. 3)");
+            int k = sc.nextInt();
             int indeks = 0;
             for(String linijka : test){
                 String[] podziel = linijka.split(",");
