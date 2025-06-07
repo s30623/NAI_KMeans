@@ -1,8 +1,6 @@
 package kmeans;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class KMeans {
 
@@ -47,9 +45,26 @@ public class KMeans {
         int[] przypisanie = new int[data.length];
         //double[] suma_odleglosci = new double[k];
         //stworz centroidy
+        System.out.println("Losowe centroidy? T/N");
+        Scanner scanner = new Scanner(System.in);
+        String decyzja = scanner.next();
         double[][] centroidy = new double[k][];
-        for(int i = 0; i < k; i++){
-            centroidy[i] = data[i];
+        if(!decyzja.toLowerCase().contains("t")) {
+            for (int i = 0; i < k; i++) {
+                centroidy[i] = data[i];
+            }
+        }else{
+            List<Integer> losowane = new LinkedList<Integer>();
+            for(int i = 0; i < k; i++){
+                while (true){
+                    int wynik = (int) (Math.random() * data.length);
+                    if(!losowane.contains(wynik)){
+                        centroidy[i] = data[wynik];
+                        losowane.add(wynik);
+                        break;
+                    }
+                }
+            }
         }
         boolean centroids_changed = true;
         //glowna petla iteraycjna
@@ -71,14 +86,37 @@ public class KMeans {
 //        wypiszGrupy(przypisanie,data,k);
         return przypisanie;
     }
-    public static void wypiszGrupy(int[] przypisanie, List<?> data, int k){
+    public static double log2(double x) {
+        return Math.log(x) / Math.log(2);
+    }
+    public static double policzEntropie(Map<String,Double> mapa, int ilosc){
+        double suma = 0;
+        for (Map.Entry<String,Double> entry: mapa.entrySet()) {
+            double ulamek = entry.getValue() / ilosc;
+            double entropia = ulamek * log2(ulamek);
+            suma += entropia;
+        }
+        if(suma != 0){
+            suma*=-1;
+        }
+        return suma/log2(ilosc);
+    }
+    public static void wypiszGrupy(int[] przypisanie, List<String> data, int k){
         for(int i = 0; i < k; i++){
             System.out.println("\nGrupa: " + (i+1));
+            Map<String,Double> zlicz_kategorie = new HashMap<>();
+            int wszystkie = 0;
             for(int j = 0; j < przypisanie.length; j++){
                 if(przypisanie[j] == i){
                     System.out.print("[" +data.get(j) +"],");
+                    String[] podziel = data.get(j).split(",");
+                    String klucz = podziel[podziel.length-1];
+                    zlicz_kategorie.putIfAbsent(klucz,0d);
+                    zlicz_kategorie.put(klucz,zlicz_kategorie.get(klucz)+1);
+                    wszystkie++;
                 }
             }
+            System.out.println("\nEntropia: " +policzEntropie(zlicz_kategorie, wszystkie));
         }
         System.out.println("\n");
     }
