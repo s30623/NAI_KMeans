@@ -92,6 +92,7 @@ public class KMeans {
     public static double policzEntropie(Map<String,Double> mapa, int ilosc){
         double suma = 0;
         for (Map.Entry<String,Double> entry: mapa.entrySet()) {
+//            System.out.println("\n"+entry.getKey() + ": " + entry.getValue());
             double ulamek = entry.getValue() / ilosc;
             double entropia = ulamek * log2(ulamek);
             suma += entropia;
@@ -99,7 +100,7 @@ public class KMeans {
         if(suma != 0){
             suma*=-1;
         }
-        return suma/log2(ilosc);
+        return suma;
     }
     public static void wypiszGrupy(int[] przypisanie, List<String> data, int k){
         for(int i = 0; i < k; i++){
